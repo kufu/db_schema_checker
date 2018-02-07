@@ -20,7 +20,6 @@ $ RAILS_ENV=test bin/rails db:migrate:reset:check
 Dropped database 'blog_test'
 Created database 'blog_test'
 ERROR: Generated schema is not consistent with db/schema.rb
-ok
 ```
 
 ## Contributing
