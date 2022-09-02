@@ -10,23 +10,29 @@ namespace :db do
         original_env_schema = ENV['SCHEMA']
         original_env_verbose = ENV['VERBOSE']
 
+        schema_path = if ActiveRecord.schema_format == :ruby
+                        'db/schema.rb'
+                      else
+                        'db/structure.sql'
+                      end
+
         consistent = nil
         diff = ''
         Dir.mktmpdir(nil, Rails.root.join('tmp')) do |dir|
-          schema_rb = Rails.root.join('db', 'schema.rb')
-          generated_schema = File.join(dir, 'schema.rb')
+          old_schema = Rails.root.join(schema_path)
+          new_schema = File.join(dir, File.basename(schema_path))
 
-          ENV['SCHEMA'] = generated_schema
+          ENV['SCHEMA'] = new_schema
           ENV['VERBOSE'] = 'false'
 
           Rake::Task['db:migrate:reset'].invoke
 
-          consistent = FileUtils.compare_file(schema_rb, generated_schema)
+          consistent = FileUtils.compare_file(old_schema, new_schema)
 
           next if consistent
           next if `which diff`.empty?
 
-          diff = `diff -u #{schema_rb} #{generated_schema}`
+          diff = `diff -u #{old_schema} #{new_schema}`
         end
 
         ENV['SCHEMA'] = original_env_schema
