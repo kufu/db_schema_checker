@@ -10,7 +10,13 @@ namespace :db do
         original_env_schema = ENV['SCHEMA']
         original_env_verbose = ENV['VERBOSE']
 
-        schema_path = if ActiveRecord.schema_format == :ruby
+        schema_format = if ActiveRecord.gem_version < Gem::Version.create('7.0.0')
+                          ActiveRecord::Base.schema_format
+                        else
+                          ActiveRecord.schema_format
+                        end
+
+        schema_path = if schema_format == :ruby
                         'db/schema.rb'
                       else
                         'db/structure.sql'
