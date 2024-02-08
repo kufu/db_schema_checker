@@ -1,5 +1,7 @@
 # DbSchemaChecker
 
+This tool adds a convenient rake task that allows you to verify whether schema.rb and migration files have been correctly committed. It’s designed to help ensure the integrity of your database schema management process.
+
 ## Installation
 
 ```ruby
@@ -21,6 +23,17 @@ Dropped database 'blog_test'
 Created database 'blog_test'
 ERROR: Generated schema is not consistent with db/schema.rb
 ```
+
+## Why This Tool Was Created
+
+Many developers have encountered issues with database schema management in Continuous Integration (CI) environments, depending on how database tables are managed. Common scenarios include:
+
+- Being reminded during a review that migration files or schema.rb were not updated.
+- Experiencing discrepancies in the order of columns in schema.rb compared to the live database after merging parallel pull requests that add columns to the same table.
+- Noticing changes in schema.rb after running migrations from the latest main branch, indicating that schema.rb was updated.
+- Encountering ActiveRecord::PendingMigrationError because only schema.rb was committed, leaving migrations pending.
+
+These issues often arise from inconsistencies between migration files and their output, schema.rb, on the main branch. To alleviate the hassle of manually checking these consistencies, this tool was developed.
 
 ## Contributing
 
